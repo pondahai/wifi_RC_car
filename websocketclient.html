@@ -1,16 +1,28 @@
 <!DOCTYPE html>
   <meta charset="utf-8" />
+  <head>
   <title>WebSocket Test</title>
+  <style type="text/css">
+	  *:not(input):not(textarea)  { -webkit-touch-callout: none !important; 
+		  -webkit-user-select: none;}
+	  a { -webkit-user-select: none !important; }
+  </style>
+</head>
   <script language="javascript" type="text/javascript">
 
-  var wsUri = "ws://10.1.1.37:8000/";
+  var wsUri = "ws://192.168.4.1:8000/";
   var output;
+  var leftButton;
 
   function init()
   {
     output = document.getElementById("output");
+	leftButton = document.getElementById("leftButton");
     testWebSocket();
-  }
+	document.addEventListener("selectstart", function() {
+	  console.log('Selection started'); 
+	  return false;
+	}, false);  }
 
   function testWebSocket()
   {
@@ -25,6 +37,10 @@
   {
     writeToScreen("CONNECTED");
     doSend("WebSocket rocks");
+	
+    leftButton.addEventListener("onmousedown", doSend('leftBtnDown'), false);
+    leftButton.addEventListener("onmouseup", doSend('leftBtnUp'), false);
+	
   }
 
   function onClose(evt)
@@ -58,17 +74,23 @@
 	output.innerHTML = message;
   }
 
+  function selectstart()
+  {
+	  return false;
+  }
   
   window.addEventListener("load", init, false);
-
+  
   </script>
-
+  <body>
   <h2>WebSocket Test</h2>
 
   <div id="output"></div>
   
-  <button onmousedown="doSend('leftBtnDown')" onmouseup="doSend('leftBtnUp')">Left</button>
-  <button onmousedown="doSend('rightBtnDown')" onmouseup="doSend('rightBtnUp')">Right</button>
-  <button onmousedown="doSend('forewardBtnDown')" onmouseup="doSend('forewardBtnUp')">Foreward</button>
-  <button onmousedown="doSend('backwardBtnDown')" onmouseup="doSend('backwardBtnUp')">Backward</button>
+  <div id="leftButton"><h1>Left</h1></div>
   
+  <button style="width:100px;height:100px" ontouchstart="doSend('rightBtnDown')" ontouchend="doSend('rightBtnUp')">Left</button>
+  <button style="width:100px;height:100px" ontouchstart="doSend('leftBtnDown')" ontouchend="doSend('leftBtnUp')">Right</button>
+  <button style="width:100px;height:100px" ontouchstart="doSend('forewardBtnDown')" ontouchend="doSend('forewardBtnUp')">Foreward</button>
+  <button style="width:100px;height:100px" ontouchstart="doSend('backwardBtnDown')" ontouchend="doSend('backwardBtnUp')">Backward</button>
+</body>
